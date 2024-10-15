@@ -55,18 +55,24 @@ app.get("/", (req, res) => {
 });
 
 //Endpoint para servir el archivo XLS al frontend
-app.get("/api/cba-cbt/", async (req, res) => {
-    try {
-        const jsonData = await downloadAndProcessXLS();
-        if (jsonData) {
-            res.json(jsonData); // Enviar el JSON como respuesta
-        } else {
-            res.status(503).send("Error al procesar el archivo.");
-        }
-    } catch (error) {
-        res.status(500).send("Error interno del servidor");
-    }
+// app.get("/api/cba-cbt/", async (req, res) => {
+//     try {
+//         const jsonData = await downloadAndProcessXLS();
+//         if (jsonData) {
+//             res.json(jsonData); // Enviar el JSON como respuesta
+//         } else {
+//             res.status(503).send("Error al procesar el archivo.");
+//         }
+//     } catch (error) {
+//         res.status(500).send("Error interno del servidor");
+//     }
+// });
+
+
+app.get("/api/cba-cbt/", (req, res) => {
+    res.json({ message: "La ruta está funcionando" });
 });
+
 
 // Si estás ejecutando localmente, usa app.listen() para iniciar el servidor
 if (process.env.NODE_ENV !== "production") {

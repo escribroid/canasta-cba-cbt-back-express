@@ -1,10 +1,14 @@
 import express from "express";
+import { config } from "dotenv";
 import cors from "cors";
 import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
-
 import { downloadAndProcessXLS } from "./downloader.js";
+
+// Carga las variables de entorno del archivo .env
+config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -63,7 +67,13 @@ app.get("/api/cba-cbt/", async (req, res) => {
     }
 });
 
-// Servidor escuchando
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+// Si estás ejecutando localmente, usa app.listen() para iniciar el servidor
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Servidor en desarrollo escuchando en puerto ${PORT}`);
+    });
+}
+
+// Exporta la aplicación para producción (como en Vercel)
+export default app;

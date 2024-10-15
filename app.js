@@ -8,14 +8,13 @@ import { downloadAndProcessXLS } from "./downloader.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Servir los archivos estáticos de Vite en producción
-app.use(express.static(path.join(__dirname, "client/dist")));
+// app.use(express.static(path.join(__dirname, "client/dist")));
 app.use(cors());
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
@@ -46,8 +45,8 @@ app.use(cors());
 // }, 60 * 60 * 1000); // Verificar cada 1 hora
 
 // Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/dist/"));
+app.get("/", (req, res) => {
+    res.send("HOME");
 });
 
 //Endpoint para servir el archivo XLS al frontend

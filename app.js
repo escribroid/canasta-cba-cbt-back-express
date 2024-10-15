@@ -50,7 +50,8 @@ app.use(cors());
 
 // Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
 app.get("/", (req, res) => {
-    res.send("HOME");
+    res.send("<h1>HOME</h1>");
+    
 });
 
 //Endpoint para servir el archivo XLS al frontend

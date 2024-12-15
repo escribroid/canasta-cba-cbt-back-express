@@ -5,6 +5,7 @@ import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadAndProcessXLS } from "./downloader.js";
+let version = "0.1.0";
 
 // Carga las variables de entorno del archivo .env
 config();
@@ -51,7 +52,6 @@ app.use(cors());
 // Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
 app.get("/", (req, res) => {
     res.send("<h1>HOME</h1>");
-    
 });
 
 //Endpoint para servir el archivo XLS al frontend
@@ -68,10 +68,6 @@ app.get("/api/cba-cbt/", async (req, res) => {
     }
 });
 
-
-
-
-
 // Si estás ejecutando localmente, usa app.listen() para iniciar el servidor
 if (process.env.NODE_ENV !== "production") {
     const PORT = process.env.PORT || 3000;
@@ -79,6 +75,11 @@ if (process.env.NODE_ENV !== "production") {
         console.log(`Servidor desarrollo escuchando en puerto ${PORT}`);
     });
 }
+
+// localhost:3000
+/* app.listen(PORT, () => {
+    console.log(`Servidor desarrollo escuchando en puerto ${PORT}`);
+}); */
 
 // Exporta la aplicación para producción (como en Vercel)
 export default app;

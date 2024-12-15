@@ -5,7 +5,7 @@ import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadAndProcessXLS } from "./downloader.js";
-let version = "0.1.0";
+let version = "1.0.1";
 
 // Carga las variables de entorno del archivo .env
 config();

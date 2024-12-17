@@ -50,7 +50,43 @@ async function downloadAndProcessXLS() {
         let simpliDataEnd = simpliData.length - 1;
         simpliData = simpliData.slice(3, simpliDataEnd);
 
-        console.log("simpliData", simpliData[101]);
+        /*         console.log("simpliData1", simpliData[101]); */
+
+        for (let i = 0; i < simpliData.length; i++) {
+            const cbaValue = simpliData[i].cba;
+            const cbtValue = simpliData[i].cbt;
+
+            function transformarNumero(str) {
+                if (str) {
+                    // Si tiene comas y decimales (2 dígitos)
+                    if (str.match(/,\d{2}$/)) {
+                        // Reemplazar la última coma por punto (si tiene decimales)
+                        let result = str.replace(/,(?=[^,]*$)/, ".");
+                        // Eliminar todas las demás comas
+                        result = result.replace(/,/g, "");
+                        return result; // Devolver el valor transformado
+                    } else {
+                        // Si no tiene decimales, eliminar todas las comas
+                        return str.replace(/,/g, ""); // Eliminar comas
+                    }
+                }
+                return str; // Si la cadena está vacía o no es válida, devolvemos la original
+            }
+
+            // Transformar cba si es una cadena
+            if (typeof cbaValue === "string") {
+                let transformedCba = transformarNumero(cbaValue);
+                simpliData[i].cba = parseFloat(transformedCba); // Convertir a float
+            }
+
+            // Transformar cbt si es una cadena
+            if (typeof cbtValue === "string") {
+                let transformedCbt = transformarNumero(cbtValue);
+                simpliData[i].cbt = parseFloat(transformedCbt); // Convertir a float
+            }
+        }
+
+        //console.log("simpliData2", simpliData[101]); // Ver resultado
 
         // Aquí puedes devolver los datos procesados directamente
         return simpliData;

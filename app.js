@@ -55,7 +55,7 @@ app.get("/", (req, res) => {
 });
 
 //Endpoint para servir el archivo XLS al frontend
-app.get("/api/cba-cbt/", async (req, res) => {
+app.get("/api/v1/cba-cbt/", async (req, res) => {
     try {
         const jsonData = await downloadAndProcessXLS();
         if (jsonData) {

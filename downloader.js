@@ -3,7 +3,8 @@ import fetch from "node-fetch";
 import XLS from "xlsjs"; // Importación corregida
 
 // URL del archivo XLS
-const xlsUrl = "https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls";
+const urlXlsCba = "https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls";
+const urlXlsIpc = "https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls";
 
 // Función para convertir una fecha de Excel a una fecha de JavaScript
 function excelDateToJSDate(excelDate) {
@@ -20,10 +21,10 @@ function excelDateToJSDate(excelDate) {
     return `${year}-${month}-${day}`;
 }
 
-async function downloadAndProcessXLS() {
+async function downloadProcessXlsCbaCbt() {
     try {
         // Descargar el archivo XLS
-        const response = await fetch(xlsUrl);
+        const response = await fetch(urlXlsCba);
         if (!response.ok) {
             throw new Error(`Error al descargar el archivo: ${response.statusText}`);
         }
@@ -36,6 +37,9 @@ async function downloadAndProcessXLS() {
         const sheet = workbook.Sheets[workbook.SheetNames[0]]; // Obtén la primera hoja
 
         const jsonData = XLS.utils.sheet_to_json(sheet);
+
+        //console.log("jsonData", jsonData);
+
         let simpliData = jsonData.map((row) => ({
             fecha: excelDateToJSDate(
                 row[
@@ -45,6 +49,7 @@ async function downloadAndProcessXLS() {
             cba: row["__EMPTY"],
             cbt: row["__EMPTY_2"],
         }));
+        //console.log("simpliData", simpliData);
 
         // Datos procesados
         let simpliDataEnd = simpliData.length - 1;
@@ -89,6 +94,7 @@ async function downloadAndProcessXLS() {
         //console.log("simpliData2", simpliData[101]); // Ver resultado
 
         // Aquí puedes devolver los datos procesados directamente
+        //console.log("simpliData", simpliData);
         return simpliData;
     } catch (error) {
         console.error("Error:", error);
@@ -97,6 +103,70 @@ async function downloadAndProcessXLS() {
 }
 
 // Ejecutar la función (puedes comentarlo al usarlo como un módulo)
-downloadAndProcessXLS();
+downloadProcessXlsCbaCbt();
 
-export { downloadAndProcessXLS };
+async function downloadProcessXlsIpc() {
+    try {
+        // Descargar el archivo XLS
+        const response = await fetch(urlXlsIpc);
+        if (!response.ok) {
+            throw new Error(`Error al descargar el archivo: ${response.statusText}`);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // Leer el archivo directamente desde el buffer
+        const workbook = XLS.read(buffer, { type: "buffer" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]]; // Obtén la primera hoja
+        const jsonData = XLS.utils.sheet_to_json(sheet);
+        // ipc values all
+        const ipcValuesAll = jsonData[6];
+        // ipc length
+        const ipcObjSize = Object.keys(ipcValuesAll).length - 1;
+        // ipc years count
+        const ipcYears = ipcObjSize / 12;
+        // ipc years count int
+        const ipcYearsInt = parseInt(ipcYears);
+        // ipc year actual
+        const ipcYearActual = 2017 + ipcYearsInt;
+        // console.log("ipcYearActual", ipcYearActual);
+
+        // ipc month actual
+        let ipcMonthActual = ipcObjSize % 12;
+        if (ipcMonthActual === 0) {
+            ipcMonthActual = 12;
+        }
+        // console.log("ipcMonthActual", ipcMonthActual);
+
+        // ipc value actual
+        const ipcValuesArray = Object.values(ipcValuesAll);
+        const ipcValueActual = ipcValuesArray[ipcValuesArray.length - 1];
+        // console.log("ipcValueActual", ipcValueActual);
+
+        let ipcJson = {
+            ipcValue: ipcValueActual,
+            ipcMonth: ipcMonthActual,
+            ipcYear: ipcYearActual,
+        };
+
+        // console.log("ipcJson", ipcJson);
+
+        return ipcJson;
+        // Convertir a array, mapear y reconstruir
+        // const DateIpc = Object.fromEntries(
+        //     Object.entries(jsonData[2]).map(([key, value]) => {
+        //         if (typeof value === "number") {
+        //             return [key, excelDateToJSDate(value)]; // Convierte los números a fechas
+        //         }
+        //         return [key, value]; // Mantén el resto de los valores igual
+        //     })
+        // );
+    } catch (error) {
+        console.error("Error:", error);
+        return null; // O lanzar un error dependiendo de cómo quieras manejarlo
+    }
+}
+downloadProcessXlsIpc();
+
+export { downloadProcessXlsCbaCbt, downloadProcessXlsIpc };

@@ -13,7 +13,7 @@ import fs from "fs";
 import XLSX from "xlsx";
 
 // URL del archivo XLS
-const xlsUrl = "https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls";
+const urlXlsCba = "https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls";
 
 // Función para descargar el archivo
 async function downloadFile(url, outputPath) {
@@ -57,7 +57,7 @@ const filePath = "./archivo-cba-cbt.xls";
 (async () => {
     try {
         // Descargar el archivo
-        await downloadFile(xlsUrl, filePath);
+        await downloadFile(urlXlsCba, filePath);
 
         // Procesar el archivo descargado
         processXLS(filePath);

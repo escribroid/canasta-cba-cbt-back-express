@@ -4,8 +4,15 @@ import cors from "cors";
 import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import { downloadAndProcessXLS } from "./downloader.js";
+import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
 let version = "1.0.1";
+
+/* 
+    #Link canasta crianza
+https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_canasta_crianza.xlsx
+    #Link ipc (mes 12 en el link es la del mes 11)
+https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
+*/
 
 // Carga las variables de entorno del archivo .env
 config();
@@ -57,7 +64,20 @@ app.get("/", (req, res) => {
 //Endpoint para servir el archivo XLS al frontend
 app.get("/api/v1/cba-cbt/", async (req, res) => {
     try {
-        const jsonData = await downloadAndProcessXLS();
+        const jsonData = await downloadProcessXlsIpc();
+        if (jsonData) {
+            res.json(jsonData); // Enviar el JSON como respuesta
+        } else {
+            res.status(503).send("Error al procesar el archivo.");
+        }
+    } catch (error) {
+        res.status(500).send("Error interno del servidor");
+    }
+});
+
+app.get("/api/v1/ipc/", async (req, res) => {
+    try {
+        const jsonData = await downloadProcessXlsCbaCbt();
         if (jsonData) {
             res.json(jsonData); // Enviar el JSON como respuesta
         } else {

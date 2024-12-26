@@ -5,7 +5,7 @@ import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
-let version = "1.0.1";
+let version = "1.0.2";
 
 /* 
     #Link canasta crianza
@@ -77,9 +77,9 @@ app.get("/api/v1/cba-cbt/", async (req, res) => {
 
 app.get("/api/v1/ipc/", async (req, res) => {
     try {
-        const jsonData = await downloadProcessXlsCbaCbt();
-        if (jsonData) {
-            res.json(jsonData); // Enviar el JSON como respuesta
+        const jsonDataIpc = await downloadProcessXlsCbaCbt();
+        if (jsonDataIpc) {
+            res.json(jsonDataIpc); // Enviar el JSON como respuesta
         } else {
             res.status(503).send("Error al procesar el archivo.");
         }

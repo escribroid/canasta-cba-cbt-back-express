@@ -64,7 +64,7 @@ app.get("/", (req, res) => {
 //Endpoint para servir el archivo XLS al frontend
 app.get("/api/v1/cba-cbt/", async (req, res) => {
     try {
-        const jsonData = await downloadProcessXlsIpc();
+        const jsonData = await downloadProcessXlsCbaCbt();
         if (jsonData) {
             res.json(jsonData); // Enviar el JSON como respuesta
         } else {
@@ -77,7 +77,7 @@ app.get("/api/v1/cba-cbt/", async (req, res) => {
 
 app.get("/api/v1/ipc/", async (req, res) => {
     try {
-        const jsonDataIpc = await downloadProcessXlsCbaCbt();
+        const jsonDataIpc = await downloadProcessXlsIpc();
         if (jsonDataIpc) {
             res.json(jsonDataIpc); // Enviar el JSON como respuesta
         } else {

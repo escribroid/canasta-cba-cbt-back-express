@@ -56,12 +56,12 @@ app.use(cors());
 //   }
 // }, 60 * 60 * 1000); // Verificar cada 1 hora
 
-// Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
+// Ruta de inicio. Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
 app.get("/", (req, res) => {
     res.send("<h1>HOME</h1>");
 });
 
-//Endpoint para servir el archivo XLS al frontend
+// Endpoint: Procesar CBA/CBT
 app.get("/api/v1/cba-cbt/", async (req, res) => {
     try {
         const jsonData = await downloadProcessXlsCbaCbt();
@@ -75,6 +75,7 @@ app.get("/api/v1/cba-cbt/", async (req, res) => {
     }
 });
 
+// Endpoint: Procesar IPC
 app.get("/api/v1/ipc/", async (req, res) => {
     try {
         const jsonDataIpc = await downloadProcessXlsIpc();
@@ -88,11 +89,16 @@ app.get("/api/v1/ipc/", async (req, res) => {
     }
 });
 
+// Manejador para rutas no encontradas
+app.use((req, res) => {
+    res.status(404).send("Ruta no encontrada");
+});
+
 // Si estás ejecutando localmente, usa app.listen() para iniciar el servidor
 if (process.env.NODE_ENV !== "production") {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-        console.log(`Servidor desarrollo escuchando en puerto ${PORT}`);
+        console.log(`Servidor desarrollo en puerto ${PORT}`);
     });
 }
 

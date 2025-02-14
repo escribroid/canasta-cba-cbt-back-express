@@ -3,9 +3,12 @@ setInterval(() => {
     if (now.getDate() === 1) {
         isDownloadedThisMonth = false; // Reinicia al primer día del mes
     }
+    console.log("isDownloadedThisMonth", isDownloadedThisMonth);
     // ...resto de la lógica
 }, 60 * 60 * 1000); // Verificar cada 1 hora
 ("https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls");
+
+
 
 // Importar los módulos necesarios
 import fetch from "node-fetch";

@@ -7,7 +7,6 @@
 import fetch from "node-fetch";
 import XLS from "xlsjs"; // Importación corregida
 import { EventEmitter } from "events";
-import { log } from "console";
 
 const now = new Date();
 const ipcYearLarge = now.getFullYear();

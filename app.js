@@ -1,3 +1,11 @@
+// TODO
+/* 
+    #Link canasta crianza
+https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_canasta_crianza.xlsx
+    #Link ipc (mes 12 en el link es la del mes 11)
+https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
+*/
+
 import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
@@ -7,12 +15,7 @@ import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
 const version = "1.0.5";
 
-/* 
-    #Link canasta crianza
-https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_canasta_crianza.xlsx
-    #Link ipc (mes 12 en el link es la del mes 11)
-https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
-*/
+
 
 // Carga las variables de entorno del archivo .env
 config();

@@ -5,7 +5,7 @@ import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
-const version = "1.0.4";
+const version = "1.0.5";
 
 /* 
     #Link canasta crianza

@@ -214,7 +214,7 @@ async function downloadProcessXlsIpc() {
 }
 downloadProcessXlsIpc();
 
-/* ****************************************************************************************************************************** */
+/* *********************************************************** */
 // Función para convertir una fecha de Excel a una fecha de JavaScript
 function excelDateToJSDate(excelDate) {
     const excelEpoch = new Date(1900, 0, 1);

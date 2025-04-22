@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-const version = "1.0.5";
+const version = "1.0.6";
 
 // Carga las variables de entorno del archivo .env
 config();

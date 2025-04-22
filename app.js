@@ -30,7 +30,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Servir los archivos estáticos de Vite en producción
 // app.use(express.static(path.join(__dirname, "client/dist")));
-app.use(cors());
+// app.use(cors());
+
+// Configuración de CORS
+app.use(cors({
+    origin: 'https://canasta-cba-cbt-front-vite.vercel.app' // Permitir solicitudes solo desde este dominio
+  }));
+  
+  app.get('/api/v1/ipc', (req, res) => {
+    res.json({ message: 'Endpoint alcanzado exitosamente' });
+  });
+  
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;

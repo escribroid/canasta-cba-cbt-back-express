@@ -16,6 +16,23 @@
             "value": "Content-Type"
           }
         ]
+      },
+      {
+        "source": "/api/v1/ipc/(.*)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "https://canasta-cba-cbt-front-vite.vercel.app"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET, POST, OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type"
+          }
+        ]
       }
     ],
     "version": 2,
@@ -32,5 +49,3 @@
         }
     ]
 }
-
-

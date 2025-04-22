@@ -9,7 +9,7 @@ https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
 import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
-import {} from "./downloader.js";
+// import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";

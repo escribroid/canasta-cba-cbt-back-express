@@ -48,13 +48,6 @@ const limiter = rateLimit({
 // Aplicar el middleware a todas las rutas
 app.use(limiter);
 
-  
-  
-app.get('/api/v1/ipc', (req, res) => {
-    res.json({ message: 'Endpoint alcanzado exitosamente' });
-});
-  
-
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;
 

@@ -13,9 +13,9 @@ import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 const version = "1.0.5";
-
-
 
 // Carga las variables de entorno del archivo .env
 config();
@@ -35,11 +35,24 @@ app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS
 app.use(cors({
     origin: 'https://canasta-cba-cbt-front-vite.vercel.app' // Permitir solicitudes solo desde este dominio
-  }));
+}));
+
+app.use(morgan('combined'));
+
+// Configuración del límite de solicitudes
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minuto
+    max: 10, // Máximo 10 solicitudes por IP
+    message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde."
+});
+// Aplicar el middleware a todas las rutas
+app.use(limiter);
+
   
-  app.get('/api/v1/ipc', (req, res) => {
+  
+app.get('/api/v1/ipc', (req, res) => {
     res.json({ message: 'Endpoint alcanzado exitosamente' });
-  });
+});
   
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes

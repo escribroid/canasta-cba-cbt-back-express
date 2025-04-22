@@ -9,7 +9,6 @@ https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
 import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
-// import {} from "./downloader.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
@@ -24,7 +23,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,19 +32,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configuración de CORS
 app.use(cors({
-    origin: 'https://canasta-cba-cbt-front-vite.vercel.app' // Permitir solicitudes solo desde este dominio
-}));
+    origin: ['https://canasta-cba-cbt-front-vite.vercel.app', 'http://localhost:5173'] // Permite más de un origen
+  }));
 
 app.use(morgan('combined'));
 
 // Configuración del límite de solicitudes
-const limiter = rateLimit({
+const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 10, // Máximo 10 solicitudes por IP
     message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde."
 });
 // Aplicar el middleware a todas las rutas
-app.use(limiter);
+// app.use(apiLimiter);  
+// Aplica solo a las rutas que comienzan con /api
+app.use('/api/', apiLimiter);
+
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;
@@ -90,9 +91,11 @@ app.get("/api/v1/cba-cbt/", async (req, res) => {
             res.status(503).send("Error al procesar el archivo.");
         }
     } catch (error) {
-        res.status(500).send("Error interno del servidor");
+        console.error('Error en /api/v1/cba-cbt/', error);
+        res.status(500).send(`Error interno del servidor: ${error.message}`);
     }
 });
+
 
 // Endpoint: Procesar IPC
 app.get("/api/v1/ipc/", async (req, res) => {
@@ -104,7 +107,8 @@ app.get("/api/v1/ipc/", async (req, res) => {
             res.status(503).send("Error al procesar el archivo.");
         }
     } catch (error) {
-        res.status(500).send("Error interno del servidor");
+        console.error('Error en /api/v1/ipc/', error);
+        res.status(500).send(`Error interno del servidor: ${error.message}`);
     }
 });
 
@@ -120,8 +124,6 @@ if (process.env.NODE_ENV !== "production") {
         console.log(`Servidor desarrollo en puerto ${PORT}`);
     });
 }
-
-
 
 // localhost:3000
 /* app.listen(PORT, () => {

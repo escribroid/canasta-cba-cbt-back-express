@@ -24,6 +24,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Habilitar trust proxy para Vercel
+// necesario para que Vercel funcione correctamente con HTTPS y el middleware de rate limiting
+app.set("trust proxy", true);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Servir los archivos estáticos de Vite en producción
@@ -31,23 +35,24 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
 
 // Configuración de CORS
-app.use(cors({
-    origin: ['https://canasta-cba-cbt-front-vite.vercel.app', 'http://localhost:5173'] // Permite más de un origen
-  }));
+app.use(
+	cors({
+		origin: ["https://canasta-cba-cbt-front-vite.vercel.app", "http://localhost:5173"], // Permite más de un origen
+	})
+);
 
-app.use(morgan('combined'));
+app.use(morgan("combined"));
 
 // Configuración del límite de solicitudes
 const apiLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minuto
-    max: 10, // Máximo 10 solicitudes por IP
-    message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde."
+	windowMs: 1 * 60 * 1000, // 1 minuto
+	max: 10, // Máximo 10 solicitudes por IP
+	message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde.",
 });
 // Aplicar el middleware a todas las rutas
-// app.use(apiLimiter);  
+// app.use(apiLimiter);
 // Aplica solo a las rutas que comienzan con /api
-app.use('/api/', apiLimiter);
-
+app.use("/api/", apiLimiter);
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;
@@ -78,51 +83,50 @@ app.use('/api/', apiLimiter);
 
 // Ruta de inicio. Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
 app.get("/", (req, res) => {
-    res.send("<h1>HOME</h1>");
+	res.send("<h1>HOME</h1>");
 });
 
 // Endpoint: Procesar CBA/CBT
 app.get("/api/v1/cba-cbt/", async (req, res) => {
-    try {
-        const jsonData = await downloadProcessXlsCbaCbt();
-        if (jsonData) {
-            res.json(jsonData); // Enviar el JSON como respuesta
-        } else {
-            res.status(503).send("Error al procesar el archivo.");
-        }
-    } catch (error) {
-        console.error('Error en /api/v1/cba-cbt/', error);
-        res.status(500).send(`Error interno del servidor: ${error.message}`);
-    }
+	try {
+		const jsonData = await downloadProcessXlsCbaCbt();
+		if (jsonData) {
+			res.json(jsonData); // Enviar el JSON como respuesta
+		} else {
+			res.status(503).send("Error al procesar el archivo.");
+		}
+	} catch (error) {
+		console.error("Error en /api/v1/cba-cbt/", error);
+		res.status(500).send(`Error interno del servidor: ${error.message}`);
+	}
 });
-
 
 // Endpoint: Procesar IPC
 app.get("/api/v1/ipc/", async (req, res) => {
-    try {
-        const jsonDataIpc = await downloadProcessXlsIpc();
-        if (jsonDataIpc) {
-            res.json(jsonDataIpc); // Enviar el JSON como respuesta
-        } else {
-            res.status(503).send("Error al procesar el archivo.");
-        }
-    } catch (error) {
-        console.error('Error en /api/v1/ipc/', error);
-        res.status(500).send(`Error interno del servidor: ${error.message}`);
-    }
+	try {
+		const jsonDataIpc = await downloadProcessXlsIpc();
+		if (jsonDataIpc) {
+			res.json(jsonDataIpc); // Enviar el JSON como respuesta
+		} else {
+			res.status(503).send("Error al procesar el archivo.");
+		}
+	} catch (error) {
+		console.error("Error en /api/v1/ipc/", error);
+		res.status(500).send(`Error interno del servidor: ${error.message}`);
+	}
 });
 
 // Manejador para rutas no encontradas
 app.use((req, res) => {
-    res.status(404).send("Ruta no encontrada");
+	res.status(404).send("Ruta no encontrada");
 });
 
 // Si estás ejecutando localmente, usa app.listen() para iniciar el servidor
 if (process.env.NODE_ENV !== "production") {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`Servidor desarrollo en puerto ${PORT}`);
-    });
+	const PORT = process.env.PORT || 3000;
+	app.listen(PORT, () => {
+		console.log(`Servidor desarrollo en puerto ${PORT}`);
+	});
 }
 
 // localhost:3000

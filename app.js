@@ -29,19 +29,6 @@ const app = express();
 // necesario para que Vercel funcione correctamente con HTTPS y el middleware de rate limiting
 app.set("trust proxy", 1); // Indica que confías en un solo proxy (el de Vercel)
 
-const getClientIP = (req) => {
-	const forwarded = req.headers["x-forwarded-for"];
-	if (forwarded) {
-		return forwarded.split(",")[0].trim();
-	}
-	return req.ip;
-};
-
-app.use((req, res, next) => {
-	const clientIP = getClientIP(req);
-	console.log(`IP del cliente: ${clientIP}`); // Útil para depuración
-	next();
-});
 
 // const isTrustedIP = (ip) => {
 //     const trustedIPs = ['203.0.113.0', '192.168.1.1']; // Ejemplo de lista de IPs confiables
@@ -79,20 +66,31 @@ app.use(
 
 app.use(morgan("combined"));
 
+
+
+
+
+
 // Configuración del límite de solicitudes
 const apiLimiter = rateLimit({
-	windowMs: 1 * 60 * 1000, // 1 minuto
-	max: 10, // Máximo 10 solicitudes por IP
-	keyGenerator: (req) => {
-		const clientIP = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.ip;
-		return clientIP; // Usa la IP del cliente como clave
-	},
-	message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde.",
+    windowMs: 1 * 60 * 1000, // 1 minuto
+    max: 10, // Máximo 10 solicitudes por IP
+    keyGenerator: (req) => {
+        // Obtén la IP del cliente del encabezado X-Forwarded-For
+        const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+        return clientIP; // Usa la IP del cliente como clave
+    },
+    message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde.",
 });
 
 // Aplicar el middleware a todas las rutas
 // Aplica solo a las rutas que comienzan con /api
-app.use("/api/", apiLimiter);
+app.use('/api/', apiLimiter); // Aplica el limitador a rutas específicas
+
+app.use((req, res, next) => {
+    console.log(`IP del cliente: ${req.headers['x-forwarded-for'] || req.ip}`);
+    next();
+});
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;

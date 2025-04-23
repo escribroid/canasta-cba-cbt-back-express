@@ -26,7 +26,6 @@ const app = express();
 
 // Habilitar trust proxy para Vercel
 // necesario para que Vercel funcione correctamente con HTTPS y el middleware de rate limiting
-app.set("trust proxy", true);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,6 +52,8 @@ const apiLimiter = rateLimit({
 // app.use(apiLimiter);
 // Aplica solo a las rutas que comienzan con /api
 app.use("/api/", apiLimiter);
+
+app.set("trust proxy", true);
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;

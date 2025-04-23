@@ -14,6 +14,7 @@ import { fileURLToPath } from "url";
 import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 const version = "1.0.61";
 
 // Carga las variables de entorno del archivo .env
@@ -26,6 +27,10 @@ const app = express();
 
 // Habilitar trust proxy para Vercel
 // necesario para que Vercel funcione correctamente con HTTPS y el middleware de rate limiting
+app.set('trust proxy', 'loopback'); // Solo confía en proxies locales
+
+// Usa Helmet para mejorar la seguridad
+app.use(helmet());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,7 +58,6 @@ const apiLimiter = rateLimit({
 // Aplica solo a las rutas que comienzan con /api
 app.use("/api/", apiLimiter);
 
-app.set("trust proxy", true);
 
 // Variable para rastrear si el archivo ya ha sido descargado este mes
 //let isDownloadedThisMonth = false;

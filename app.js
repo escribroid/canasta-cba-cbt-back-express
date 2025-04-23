@@ -47,7 +47,12 @@ app.use((req, res, next) => {
 });
 
 // Usa Helmet para mejorar la seguridad
-app.use(helmet());
+app.use(
+	helmet({
+		contentSecurityPolicy: false, // Desactiva CSP si no es necesario
+		frameguard: { action: "deny" }, // Configura protección contra iframes
+	})
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -58,7 +63,7 @@ app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS
 app.use(
 	cors({
-		origin: ["https://canasta-cba-cbt-front-vite.vercel.app", "http://localhost:5173"], // Permite más de un origen
+		origin: ["https://canasta-cba-cbt-front-vite.vercel.app"], // Permite más de un origen
 	})
 );
 
@@ -71,7 +76,7 @@ const apiLimiter = rateLimit({
 	message: "Has excedido el límite de solicitudes. Intenta nuevamente más tarde.",
 });
 // Aplicar el middleware a todas las rutas
-// app.use(apiLimiter);
+app.use(apiLimiter);
 // Aplica solo a las rutas que comienzan con /api
 app.use("/api/", apiLimiter);
 

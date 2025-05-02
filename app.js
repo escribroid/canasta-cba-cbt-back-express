@@ -1,6 +1,6 @@
 // TODO
 /* 
-    #Link canasta crianza
+    #Link canasta crianza 
 https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_canasta_crianza.xlsx
     #Link ipc (mes 12 en el link es la del mes 11)
 https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
@@ -44,10 +44,10 @@ const app = express();
 
 // Usa Helmet para mejorar la seguridad
 app.use(
-	helmet({
-		contentSecurityPolicy: false, // Desactiva CSP si no es necesario
-		frameguard: { action: "deny" }, // Configura protección contra iframes
-	})
+    helmet({
+        contentSecurityPolicy: false, // Desactiva CSP si no es necesario
+        frameguard: { action: "deny" }, // Configura protección contra iframes
+    })
 );
 
 app.use(express.json());
@@ -58,9 +58,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configuración de CORS
 app.use(
-	cors({
-		origin: ["https://canasta-cba-cbt-front-vite.vercel.app"], // Permite más de un origen
-	})
+    cors({
+        origin: ["https://canasta-cba-cbt-front-vite.vercel.app"], // Permite más de un origen
+    })
 );
 
 app.use(morgan("combined"));
@@ -116,50 +116,50 @@ app.use(morgan("combined"));
 
 // Ruta de inicio. Si ninguna ruta coincide, devuelve el archivo `index.html` generado por Vite
 app.get("/", (req, res) => {
-	res.send("<h1>HOME</h1>");
+    res.send("<h1>HOME</h1>");
 });
 
 // Endpoint: Procesar CBA/CBT
 app.get("/api/v1/cba-cbt/", async (req, res) => {
-	try {
-		const jsonData = await downloadProcessXlsCbaCbt();
-		if (jsonData) {
-			res.json(jsonData); // Enviar el JSON como respuesta
-		} else {
-			res.status(503).send("Error al procesar el archivo.");
-		}
-	} catch (error) {
-		console.error("Error en /api/v1/cba-cbt/", error);
-		res.status(500).send(`Error interno del servidor: ${error.message}`);
-	}
+    try {
+        const jsonData = await downloadProcessXlsCbaCbt();
+        if (jsonData) {
+            res.json(jsonData); // Enviar el JSON como respuesta
+        } else {
+            res.status(503).send("Error al procesar el archivo.");
+        }
+    } catch (error) {
+        console.error("Error en /api/v1/cba-cbt/", error);
+        res.status(500).send(`Error interno del servidor: ${error.message}`);
+    }
 });
 
 // Endpoint: Procesar IPC
 app.get("/api/v1/ipc/", async (req, res) => {
-	try {
-		const jsonDataIpc = await downloadProcessXlsIpc();
-		if (jsonDataIpc) {
-			res.json(jsonDataIpc); // Enviar el JSON como respuesta
-		} else {
-			res.status(503).send("Error al procesar el archivo.");
-		}
-	} catch (error) {
-		console.error("Error en /api/v1/ipc/", error);
-		res.status(500).send(`Error interno del servidor: ${error.message}`);
-	}
+    try {
+        const jsonDataIpc = await downloadProcessXlsIpc();
+        if (jsonDataIpc) {
+            res.json(jsonDataIpc); // Enviar el JSON como respuesta
+        } else {
+            res.status(503).send("Error al procesar el archivo.");
+        }
+    } catch (error) {
+        console.error("Error en /api/v1/ipc/", error);
+        res.status(500).send(`Error interno del servidor: ${error.message}`);
+    }
 });
 
 // Manejador para rutas no encontradas
 app.use((req, res) => {
-	res.status(404).send("Ruta no encontrada");
+    res.status(404).send("Ruta no encontrada");
 });
 
 // Si estás ejecutando localmente, usa app.listen() para iniciar el servidor
 if (process.env.NODE_ENV !== "production") {
-	const PORT = process.env.PORT || 3000;
-	app.listen(PORT, () => {
-		console.log(`Servidor desarrollo en puerto ${PORT}`);
-	});
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Servidor desarrollo en puerto ${PORT}`);
+    });
 }
 
 // localhost:3000

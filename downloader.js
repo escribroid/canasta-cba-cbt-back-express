@@ -7,6 +7,7 @@
 import fetch from "node-fetch";
 import XLS from "xlsjs"; // Importación corregida
 import { EventEmitter } from "events";
+import { error, log } from "console";
 
 const now = new Date();
 const ipcYearLarge = now.getFullYear();
@@ -23,26 +24,42 @@ if (ipcMonth < 10) {
 }
 
 async function verifyExcelFile(apiIpcUrl) {
+    console.log(`[${new Date().toISOString()}] Iniciando verificación de: ${apiIpcUrl}`);
     try {
+        const startTime = Date.now();
+
+        // Primero verificar con HEAD para ahorrar ancho de banda
+        const headResponse = await fetch(apiIpcUrl, { method: "HEAD" });
+        const duration = Date.now() - startTime;
+
+        console.log(
+            `[${new Date().toISOString()}] Respuesta recibida en ${duration}ms. Status: ${headResponse.status}`
+        );
+        console.log("Headers:", JSON.stringify([...headResponse.headers.entries()]));
+
+        if (!headResponse.ok) {
+            console.log(`Archivo no disponible (HTTP ${headResponse.status})`);
+            return false;
+        }
+
         // Solicitar solo los primeros 8 bytes del archivo
         const response = await fetch(apiIpcUrl, {
             headers: { Range: "bytes=0-7" },
         });
-
         if (!response.ok) {
             console.log("Error al obtener el archivo.");
             return false;
         }
 
-        // Obtener el Content-Type
-        const contentType = response.headers.get("Content-Type");
-
-        // Verificar el Content-Type
-        if (
-            !contentType.includes("application/vnd.ms-excel") &&
-            !contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        ) {
-            console.log("El archivo no es un Excel válido (Content-Type incorrecto).");
+        // Obtener y Verificar Content-Type
+        const contentType = response.headers.get("Content-Type") || "";
+        const validContentTypes = [
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/octet-stream", // INDEC podría usar este
+        ];
+        if (!validContentTypes.some((type) => contentType.includes(type))) {
+            console.log(`Content-Type no válido: ${contentType}`);
             return false;
         }
 
@@ -67,13 +84,15 @@ async function verifyExcelFile(apiIpcUrl) {
             return false;
         }
     } catch (error) {
-        console.error("Error al verificar el archivo:", error);
+        console.error(`[${new Date().toISOString()}] Error verifyExcelFile:`, error);
+
         return false;
     }
 }
 
 async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     let currentIpcMonth = ipcMonth;
+    console.log("currentIpcMonth", currentIpcMonth);
     let currentIpcYear = ipcYear;
 
     while (currentIpcYear >= "2024") {
@@ -85,7 +104,7 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
             console.log(`Archivo válido encontrado: ${apiIpcUrl}`);
             return apiIpcUrl;
         } else {
-            console.log(`Archivo no válido: ${apiIpcUrl}`);
+            console.log(`Archivo no válido: ${apiIpcUrl}`, error);
             // Restar un mes
             currentIpcMonth -= 1;
             if (currentIpcMonth < 1) {

@@ -96,8 +96,9 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     let currentIpcMonth = ipcMonth;
     console.log("currentIpcMonth", currentIpcMonth);
     let currentIpcYear = ipcYear;
+    console.log("99 currentIpcYear", typeof currentIpcYear);
 
-    while (currentIpcYear >= "2024") {
+    while (currentIpcYear >= "24") {
         // Ajusta el año mínimo según sea necesario
         const apiIpcUrl = `${baseIpcUrl}${String(currentIpcMonth).padStart(
             2,

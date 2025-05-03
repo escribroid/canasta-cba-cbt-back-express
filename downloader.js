@@ -103,13 +103,13 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
             2,
             "0"
         )}_${currentIpcYear}.xls`;
-        console.log(`101 Verificando IpcURL: ${apiIpcUrl}`);
+        console.log(`106- Verificando IpcURL: ${apiIpcUrl}`);
 
         if (await verifyExcelFile(apiIpcUrl)) {
-            console.log(`104 Archivo válido encontrado: ${apiIpcUrl}`);
+            console.log(`109- Archivo válido encontrado: ${apiIpcUrl}`);
             return apiIpcUrl;
         } else {
-            console.log(`107 Archivo no válido: ${apiIpcUrl}`, error);
+            console.log(`112- Archivo no válido: ${apiIpcUrl}`, error);
             // Restar un mes
             currentIpcMonth -= 1;
             if (currentIpcMonth < 1) {
@@ -118,7 +118,7 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
             }
         }
     }
-    console.log("No se encontró un archivo válido.");
+    console.log("121- No se encontró un archivo válido.");
     return null;
 }
 

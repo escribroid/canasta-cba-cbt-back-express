@@ -98,13 +98,13 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     while (currentIpcYear >= "2024") {
         // Ajusta el año mínimo según sea necesario
         const apiIpcUrl = `${baseIpcUrl}${String(currentIpcMonth).padStart(2, "0")}_${currentIpcYear}.xls`;
-        console.log(`Verificando IpcURL: ${apiIpcUrl}`);
+        console.log(`101 Verificando IpcURL: ${apiIpcUrl}`);
 
         if (await verifyExcelFile(apiIpcUrl)) {
-            console.log(`Archivo válido encontrado: ${apiIpcUrl}`);
+            console.log(`104 Archivo válido encontrado: ${apiIpcUrl}`);
             return apiIpcUrl;
         } else {
-            console.log(`Archivo no válido: ${apiIpcUrl}`, error);
+            console.log(`107 Archivo no válido: ${apiIpcUrl}`, error);
             // Restar un mes
             currentIpcMonth -= 1;
             if (currentIpcMonth < 1) {

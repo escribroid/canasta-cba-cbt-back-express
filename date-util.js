@@ -8,8 +8,6 @@ setInterval(() => {
 }, 60 * 60 * 1000); // Verificar cada 1 hora
 ("https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls");
 
-
-
 // Importar los módulos necesarios
 import fetch from "node-fetch";
 import fs from "fs";

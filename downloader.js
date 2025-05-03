@@ -33,7 +33,9 @@ async function verifyExcelFile(apiIpcUrl) {
         const duration = Date.now() - startTime;
 
         console.log(
-            `[${new Date().toISOString()}] Respuesta recibida en ${duration}ms. Status: ${headResponse.status}`
+            `[${new Date().toISOString()}] Respuesta recibida en ${duration}ms. Status: ${
+                headResponse.status
+            }`
         );
         console.log("Headers:", JSON.stringify([...headResponse.headers.entries()]));
 
@@ -97,7 +99,10 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
 
     while (currentIpcYear >= "2024") {
         // Ajusta el año mínimo según sea necesario
-        const apiIpcUrl = `${baseIpcUrl}${String(currentIpcMonth).padStart(2, "0")}_${currentIpcYear}.xls`;
+        const apiIpcUrl = `${baseIpcUrl}${String(currentIpcMonth).padStart(
+            2,
+            "0"
+        )}_${currentIpcYear}.xls`;
         console.log(`101 Verificando IpcURL: ${apiIpcUrl}`);
 
         if (await verifyExcelFile(apiIpcUrl)) {

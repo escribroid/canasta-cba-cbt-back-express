@@ -1,0 +1,64 @@
+# Indica que esta es la raíz del proyecto EditorConfig
+root = true
+
+# Reglas por defecto para todos los archivos
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+# Archivos HTML
+[*.html]
+indent_size = 2
+
+# Archivos CSS y SCSS
+[*.css]
+indent_size = 2
+
+[*.scss]
+indent_size = 2
+
+# Archivos JavaScript y TypeScript
+[*.js]
+indent_size = 4
+
+[*.mjs]
+indent_size = 4
+
+[*.cjs]
+indent_size = 4
+
+[*.ts]
+indent_size = 4
+
+# Archivos JSX y TSX
+# Se utiliza 2 espacios para JSX y TSX para mantener la consistencia con el estilo de React
+# y para facilitar la lectura en componentes de React.
+# Esto es especialmente útil en proyectos donde se utilizan bibliotecas como Prettier o ESLint
+# que pueden tener configuraciones específicas para JSX y TSX.
+[*.jsx]
+indent_size = 2
+
+[*.tsx]
+indent_size = 2
+
+# Archivos JSON (incluye package.json, etc.)
+[*.json]
+indent_size = 2
+
+# Archivos YAML (por ejemplo, configuración de GitHub Actions)
+[*.yml]
+indent_size = 2
+
+# Archivos Markdown (evita eliminar espacios al final porque pueden ser usados para saltos de línea)
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# Archivos .env o de configuración que no requieren indentación
+[*.env]
+indent_style = none

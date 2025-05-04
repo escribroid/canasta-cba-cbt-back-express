@@ -48,7 +48,6 @@ const app = express();
 app.use(
     helmet({
         contentSecurityPolicy: false, // Desactiva CSP si no es necesario
-        frameguard: { action: "deny" }, // Configura protección contra iframes
     })
 );
 

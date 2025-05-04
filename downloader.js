@@ -5,9 +5,10 @@
 
 // Importar los módulos necesarios
 import fetch from "node-fetch";
-import XLS from "xlsx"; // Importación corregida
+import XLS from "xlsjs"; // Importación corregida
 import { EventEmitter } from "events";
 import { error, log } from "console";
+import { Buffer } from "buffer";
 
 const now = new Date();
 const ipcYearLarge = now.getFullYear();
@@ -353,4 +354,3 @@ downloadProcessXlsCbaCbt();
 // export { downloadProcessXlsCbaCbt, downloadProcessXlsIpc };
 
 export { downloadProcessXlsCbaCbt };
-

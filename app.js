@@ -64,7 +64,7 @@ app.use(
     })
 );
 
-app.use(morgan("combined"));
+// app.use(morgan("combined"));
 
 // Configuración del límite de solicitudes
 // const apiLimiter = rateLimit({

@@ -151,9 +151,9 @@ if (ipcMonth < 10) {
 const eventManagerIpc = new EventEmitter();
 
 // Escuchar el evento fuera de la función
-eventManagerIpc.on("ipcJson", (eventDetail) => {
-    console.log("Evento ipcMonth:", eventDetail.ipcMonth);
-});
+// eventManagerIpc.on("ipcJson", (eventDetail) => {
+//     console.log("Evento ipcMonth:", eventDetail.ipcMonth);
+// });
 
 // async function downloadProcessXlsIpc() {
 //     async function validacion(baseIpcUrl, ipcMonth, ipcYear) {

@@ -45,11 +45,11 @@ const app = express();
 // });
 
 // Usa Helmet para mejorar la seguridad
-app.use(
-    helmet({
-        contentSecurityPolicy: false, // Desactiva CSP si no es necesario
-    })
-);
+// app.use(
+//     helmet({
+//         contentSecurityPolicy: false, // Desactiva CSP si no es necesario
+//     })
+// );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -136,19 +136,19 @@ app.get("/api/v1/cba-cbt/", async (req, res) => {
 });
 
 // Endpoint: Procesar IPC
-app.get("/api/v1/ipc/", async (req, res) => {
-    try {
-        const jsonDataIpc = await downloadProcessXlsIpc();
-        if (jsonDataIpc) {
-            res.json(jsonDataIpc); // Enviar el JSON como respuesta
-        } else {
-            res.status(503).send("Error al procesar el archivo.");
-        }
-    } catch (error) {
-        console.error("Error en /api/v1/ipc/", error);
-        res.status(500).send(`Error interno del servidor: ${error.message}`);
-    }
-});
+// app.get("/api/v1/ipc/", async (req, res) => {
+//     try {
+//         const jsonDataIpc = await downloadProcessXlsIpc();
+//         if (jsonDataIpc) {
+//             res.json(jsonDataIpc); // Enviar el JSON como respuesta
+//         } else {
+//             res.status(503).send("Error al procesar el archivo.");
+//         }
+//     } catch (error) {
+//         console.error("Error en /api/v1/ipc/", error);
+//         res.status(500).send(`Error interno del servidor: ${error.message}`);
+//     }
+// });
 
 // Manejador para rutas no encontradas
 app.use((req, res) => {

@@ -5,7 +5,7 @@
 
 // Importar los módulos necesarios
 import fetch from "node-fetch";
-import XLS from "xlsjs"; // Importación corregida
+import XLS from "xlsx"; // Importación corregida
 import { EventEmitter } from "events";
 import { error, log } from "console";
 
@@ -24,23 +24,23 @@ if (ipcMonth < 10) {
 }
 
 async function verifyExcelFile(apiIpcUrl) {
-    console.log(`[${new Date().toISOString()}] Iniciando verificación de: ${apiIpcUrl}`);
+    //[${new Date().toISOString()}]
+    console.log(`-28- Iniciando verificación verifyExcelFile: ${apiIpcUrl}`);
     try {
-        const startTime = Date.now();
-
         // Primero verificar con HEAD para ahorrar ancho de banda
         const headResponse = await fetch(apiIpcUrl, { method: "HEAD" });
-        const duration = Date.now() - startTime;
 
-        console.log(
-            `[${new Date().toISOString()}] Respuesta recibida en ${duration}ms. Status: ${
-                headResponse.status
-            }`
-        );
-        console.log("Headers:", JSON.stringify([...headResponse.headers.entries()]));
+        // console.log(
+        //     `[${new Date().toISOString()}] Respuesta recibida en ${duration}ms. Status: ${
+        //         headResponse.status
+        //     }`
+        // );
+        // console.log("Headers:", JSON.stringify([...headResponse.headers.entries()]));
 
-        if (!headResponse.ok) {
-            console.log(`Archivo no disponible (HTTP ${headResponse.status})`);
+        console.log("-40- headResponse.status", headResponse.status);
+
+        if (!(headResponse.ok || headResponse.status === 304)) {
+            console.log(`-41- Archivo no disponible (HTTP ${headResponse.status})`);
             return false;
         }
 
@@ -53,17 +53,18 @@ async function verifyExcelFile(apiIpcUrl) {
             return false;
         }
 
-        // Obtener y Verificar Content-Type
-        const contentType = response.headers.get("Content-Type") || "";
-        const validContentTypes = [
-            "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "application/octet-stream", // INDEC podría usar este
-        ];
-        if (!validContentTypes.some((type) => contentType.includes(type))) {
-            console.log(`Content-Type no válido: ${contentType}`);
-            return false;
-        }
+        /*   // Obtener y Verificar Content-Type
+        // const contentType = response.headers.get("Content-Type") || "";
+        // console.log("-58- Content-Type:", contentType);
+        // const validContentTypes = [
+        //     "application/vnd.ms-excel",
+        //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        //     "application/octet-stream", // INDEC podría usar este
+        // ];
+        // if (!validContentTypes.some((type) => contentType.includes(type))) {
+        //     console.log(`Content-Type no válido: ${contentType}`);
+        //     return false;
+        // } */
 
         // Leer los primeros 8 bytes
         const buffer = await response.arrayBuffer();
@@ -79,14 +80,14 @@ async function verifyExcelFile(apiIpcUrl) {
         const xlsxSignature = "50 4b 03 04"; // Excel moderno (.xlsx)
 
         if (hexSignature.startsWith(xlsSignature) || hexSignature.startsWith(xlsxSignature)) {
-            console.log("El archivo es un Excel válido.");
+            console.log("-81- El archivo es un Excel válido.");
             return true;
         } else {
-            console.log("El archivo no es un Excel válido (firma incorrecta).");
+            console.log("-84- El archivo no es un Excel válido (firma incorrecta).");
             return false;
         }
     } catch (error) {
-        console.error(`[${new Date().toISOString()}] Error verifyExcelFile:`, error);
+        console.error(`-88- Error verifyExcelFile:`, error);
 
         return false;
     }
@@ -94,9 +95,9 @@ async function verifyExcelFile(apiIpcUrl) {
 
 async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     let currentIpcMonth = ipcMonth;
-    console.log("currentIpcMonth", currentIpcMonth);
+    console.log("-98- currentIpcMonth", currentIpcMonth);
     let currentIpcYear = ipcYear;
-    console.log("99 currentIpcYear", typeof currentIpcYear);
+    console.log("-100- currentIpcYear", currentIpcYear);
 
     while (currentIpcYear >= "24") {
         // Ajusta el año mínimo según sea necesario
@@ -104,13 +105,13 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
             2,
             "0"
         )}_${currentIpcYear}.xls`;
-        console.log(`106- Verificando IpcURL: ${apiIpcUrl}`);
+        console.log(`-105- Verificando IpcURL: ${apiIpcUrl}`);
 
         if (await verifyExcelFile(apiIpcUrl)) {
-            console.log(`109- Archivo válido encontrado: ${apiIpcUrl}`);
+            console.log(`-108- Archivo válido encontrado: ${apiIpcUrl}`);
             return apiIpcUrl;
         } else {
-            console.log(`112- Archivo no válido: ${apiIpcUrl}`, error);
+            console.log(`111- Archivo no válido: ${apiIpcUrl}`);
             // Restar un mes
             currentIpcMonth -= 1;
             if (currentIpcMonth < 1) {
@@ -125,9 +126,9 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
 
 getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear).then((validIpcUrl) => {
     if (validIpcUrl) {
-        console.log(`URL válida: ${validIpcUrl}`);
+        console.log(`-126- URL valida: ${validIpcUrl}`);
     } else {
-        console.log("No se encontró una URL válida.");
+        console.log("-128- No se encontró una URL válida.");
     }
 });
 
@@ -152,7 +153,7 @@ async function downloadProcessXlsIpc() {
         const response = await fetch(urlXlsIpc);
         //console.log("response", response.status);
 
-        if (!response.ok) {
+        if (!(response.ok || response.status === 304)) {
             throw new Error(`Error al descargar el archivo: ${response.statusText}`);
         }
 
@@ -161,7 +162,7 @@ async function downloadProcessXlsIpc() {
 
         // Obtener el peso del ArrayBuffer en bytes
         const bufferSize = arrayBuffer.byteLength;
-        console.log(`El tamaño del ArrayBuffer es: ${bufferSize} bytes`);
+        // console.log(`El tamaño del ArrayBuffer es: ${bufferSize} bytes`);
 
         // Verificar si el contenido está vacío
         if (!arrayBuffer || arrayBuffer.byteLength === 0) {
@@ -251,7 +252,6 @@ function excelDateToJSDate(excelDate) {
     if (month < 10) {
         month = "0" + month;
     }
-
     return `${year}-${month}-${day}`;
 }
 

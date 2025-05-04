@@ -29,7 +29,9 @@ async function verifyExcelFile(apiIpcUrl) {
     try {
         // Primero verificar con HEAD para ahorrar ancho de banda
         const headResponse = await fetch(apiIpcUrl, { method: "HEAD" });
+        const contentLength = parseInt(headResponse.headers.get("Content-Length"));
 
+        //console.log("-32- headResponse.contentLength", contentLength);
         // console.log(
         //     `[${new Date().toISOString()}] Respuesta recibida en ${duration}ms. Status: ${
         //         headResponse.status
@@ -37,7 +39,15 @@ async function verifyExcelFile(apiIpcUrl) {
         // );
         // console.log("Headers:", JSON.stringify([...headResponse.headers.entries()]));
 
-        console.log("-40- headResponse.status", headResponse.status);
+        // console.log("-40- headResponse.status", headResponse.status);
+
+        if (contentLength < 10000) {
+            console.log("-42- Archivo vacío.");
+            return false;
+        } else {
+            console.log("-44- Archivo no vacío.");
+            return true;
+        }
 
         if (!(headResponse.ok || headResponse.status === 304)) {
             console.log(`-41- Archivo no disponible (HTTP ${headResponse.status})`);
@@ -79,13 +89,13 @@ async function verifyExcelFile(apiIpcUrl) {
         const xlsSignature = "d0 cf 11 e0 a1 b1 1a e1"; // Excel antiguo (.xls)
         const xlsxSignature = "50 4b 03 04"; // Excel moderno (.xlsx)
 
-        if (hexSignature.startsWith(xlsSignature) || hexSignature.startsWith(xlsxSignature)) {
-            console.log("-81- El archivo es un Excel válido.");
-            return true;
-        } else {
-            console.log("-84- El archivo no es un Excel válido (firma incorrecta).");
-            return false;
-        }
+        // if (hexSignature.startsWith(xlsSignature) || hexSignature.startsWith(xlsxSignature)) {
+        //     console.log("-81- El archivo es un Excel válido.");
+        //     return true;
+        // } else {
+        //     console.log("-84- El archivo no es un Excel válido (firma incorrecta).");
+        //     return false;
+        // }
     } catch (error) {
         console.error(`-88- Error verifyExcelFile:`, error);
 
@@ -100,6 +110,8 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     console.log("-100- currentIpcYear", currentIpcYear);
 
     while (currentIpcYear >= "24") {
+        console.log("-110- currentIpcMonth", currentIpcMonth);
+
         // Ajusta el año mínimo según sea necesario
         const apiIpcUrl = `${baseIpcUrl}${String(currentIpcMonth).padStart(
             2,
@@ -114,6 +126,8 @@ async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
             console.log(`111- Archivo no válido: ${apiIpcUrl}`);
             // Restar un mes
             currentIpcMonth -= 1;
+            console.log("-124- currentIpcMonth", currentIpcMonth);
+
             if (currentIpcMonth < 1) {
                 currentIpcMonth = 12;
                 currentIpcYear -= 1;

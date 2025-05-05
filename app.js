@@ -11,12 +11,11 @@ import { config } from "dotenv";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-// import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
-import { downloadProcessXlsCbaCbt } from "./downloader.js";
-
+import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
 import morgan from "morgan";
 // import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+
 const version = "1.0.61";
 
 // Carga las variables de entorno del archivo .env
@@ -45,17 +44,17 @@ const app = express();
 // });
 
 // Usa Helmet para mejorar la seguridad
-// app.use(
-//     helmet({
-//         contentSecurityPolicy: false, // Desactiva CSP si no es necesario
-//     })
-// );
+app.use(
+    helmet({
+        contentSecurityPolicy: false, // Desactiva CSP si no es necesario
+    })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Servir los archivos estáticos de Vite en producción
-// app.use(express.static(path.join(__dirname, "client/dist")));
-// app.use(cors());
+app.use(express.static(path.join(__dirname, "client/dist")));
+app.use(cors());
 
 // Configuración de CORS
 app.use(
@@ -64,7 +63,7 @@ app.use(
     })
 );
 
-// app.use(morgan("combined"));
+app.use(morgan("combined"));
 
 // Configuración del límite de solicitudes
 // const apiLimiter = rateLimit({
@@ -136,19 +135,19 @@ app.get("/api/v1/cba-cbt/", async (req, res) => {
 });
 
 // Endpoint: Procesar IPC
-// app.get("/api/v1/ipc/", async (req, res) => {
-//     try {
-//         const jsonDataIpc = await downloadProcessXlsIpc();
-//         if (jsonDataIpc) {
-//             res.json(jsonDataIpc); // Enviar el JSON como respuesta
-//         } else {
-//             res.status(503).send("Error al procesar el archivo.");
-//         }
-//     } catch (error) {
-//         console.error("Error en /api/v1/ipc/", error);
-//         res.status(500).send(`Error interno del servidor: ${error.message}`);
-//     }
-// });
+app.get("/api/v1/ipc/", async (req, res) => {
+    try {
+        const jsonDataIpc = await downloadProcessXlsIpc();
+        if (jsonDataIpc) {
+            res.json(jsonDataIpc); // Enviar el JSON como respuesta
+        } else {
+            res.status(503).send("Error al procesar el archivo.");
+        }
+    } catch (error) {
+        console.error("Error en /api/v1/ipc/", error);
+        res.status(500).send(`Error interno del servidor: ${error.message}`);
+    }
+});
 
 // Manejador para rutas no encontradas
 app.use((req, res) => {

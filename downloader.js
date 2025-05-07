@@ -6,7 +6,7 @@
 import fetch from "node-fetch";
 import XLS from "xlsjs"; // Importación corregida
 import { EventEmitter } from "events";
-import { verifyExcelFile } from "./verifyExcelFile.js"; // Asegúrate de que la ruta sea correcta
+import { verifyExcelFile } from "./src/services/downloader/verifyExcelFile.js"; // Asegúrate de que la ruta sea correcta
 
 const now = new Date();
 const ipcYearLarge = now.getFullYear();

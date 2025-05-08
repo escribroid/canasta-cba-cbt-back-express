@@ -9,7 +9,6 @@ export let ipcMonth = (now.getMonth() + 1).toString();
 export const ipcDay = now.getDate().toString();
 
 export const baseIpcUrl = "https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_";
-let workbook;
 
 if (ipcMonth < 10) {
     ipcMonth = "0" + ipcMonth;

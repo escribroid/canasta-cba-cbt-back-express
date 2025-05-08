@@ -1,4 +1,3 @@
-// Importar los módulos necesarios
 import fetch from "node-fetch";
 import XLS from "xlsjs";
 import { excelDateToJSDate } from "./excel-utils.js";

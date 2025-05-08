@@ -2,28 +2,28 @@ import { baseIpcUrl, ipcMonth, ipcYear } from "./ipc.js";
 
 export async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     let currentIpcMonth = ipcMonth;
-    console.log("-98- currentIpcMonth", currentIpcMonth);
+    console.log("-5- currentIpcMonth", currentIpcMonth);
     let currentIpcYear = ipcYear;
-    console.log("-100- currentIpcYear", currentIpcYear);
+    console.log("-7- currentIpcYear", currentIpcYear);
 
     while (currentIpcYear >= "24") {
-        console.log("-110- currentIpcMonth", currentIpcMonth);
+        console.log("-10- currentIpcMonth", currentIpcMonth);
 
         // Ajusta el año mínimo según sea necesario
         const apiIpcUrl = `${baseIpcUrl}${String(currentIpcMonth).padStart(
             2,
             "0"
         )}_${currentIpcYear}.xls`;
-        console.log(`-105- Verificando IpcURL: ${apiIpcUrl}`);
+        console.log(`-17- Verificando IpcURL: ${apiIpcUrl}`);
 
         if (await verifyExcelFile(apiIpcUrl)) {
-            console.log(`-108- Archivo válido encontrado: ${apiIpcUrl}`);
+            console.log(`-20- Archivo válido encontrado: ${apiIpcUrl}`);
             return apiIpcUrl;
         } else {
-            console.log(`111- Archivo no válido: ${apiIpcUrl}`);
+            console.log(`23- Archivo no válido: ${apiIpcUrl}`);
             // Restar un mes
             currentIpcMonth -= 1;
-            console.log("-124- currentIpcMonth", currentIpcMonth);
+            console.log("-26- currentIpcMonth", currentIpcMonth);
 
             if (currentIpcMonth < 1) {
                 currentIpcMonth = 12;
@@ -31,15 +31,15 @@ export async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
             }
         }
     }
-    console.log("121- No se encontró un archivo válido.");
+    console.log("34- No se encontró un archivo válido.");
     return null;
 }
 
 getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear).then((validIpcUrl) => {
     if (validIpcUrl) {
-        console.log(`-126- URL valida: ${validIpcUrl}`);
+        console.log(`-40- URL valida: ${validIpcUrl}`);
     } else {
-        console.log("-128- No se encontró una URL válida.");
+        console.log("-42- No se encontró una URL válida.");
     }
 });
 
@@ -47,7 +47,7 @@ getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear).then((validIpcUrl) => {
 
 export async function verifyExcelFile(apiIpcUrl) {
     //[${new Date().toISOString()}]
-    console.log(`-28- Iniciando verificación verifyExcelFile: ${apiIpcUrl}`);
+    console.log(`-50- Iniciando verificación verifyExcelFile: ${apiIpcUrl}`);
     try {
         // Primero verificar con HEAD para ahorrar ancho de banda
         const headResponse = await fetch(apiIpcUrl, { method: "HEAD" });
@@ -64,15 +64,15 @@ export async function verifyExcelFile(apiIpcUrl) {
         // console.log("-40- headResponse.status", headResponse.status);
 
         if (contentLength < 10000) {
-            console.log("-42- Archivo vacío.");
+            console.log("-67- Archivo vacío.");
             return false;
         } else {
-            console.log("-44- Archivo no vacío.");
+            console.log("-70- Archivo no vacío.");
             return true;
         }
 
         if (!(headResponse.ok || headResponse.status === 304)) {
-            console.log(`-41- Archivo no disponible (HTTP ${headResponse.status})`);
+            console.log(`-75- Archivo no disponible (HTTP ${headResponse.status})`);
             return false;
         }
 
@@ -81,7 +81,7 @@ export async function verifyExcelFile(apiIpcUrl) {
             headers: { Range: "bytes=0-7" },
         });
         if (!response.ok) {
-            console.log("Error al obtener el archivo.");
+            console.log("-84- Error al obtener el archivo.");
             return false;
         }
 
@@ -119,7 +119,7 @@ export async function verifyExcelFile(apiIpcUrl) {
         //     return false;
         // }
     } catch (error) {
-        console.error(`-88- Error verifyExcelFile:`, error);
+        console.error(`-122- Error verifyExcelFile:`, error);
 
         return false;
     }

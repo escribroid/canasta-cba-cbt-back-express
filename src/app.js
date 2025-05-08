@@ -1,21 +1,11 @@
-// TODO
-/*
-    #Link canasta crianza
-https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_canasta_crianza.xlsx
-    #Link ipc (mes 12 en el link es la del mes 11)
-https://www.indec.gob.ar/ftp/cuadros/economia/sh_ipc_12_24.xls
-*/
-
 import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-// import { downloadProcessXlsCbaCbt, downloadProcessXlsIpc } from "./downloader.js";
 import morgan from "morgan";
 // import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-
 import apiRoutes from "./routes/api.js";
 
 const version = "1.0.61";

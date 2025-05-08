@@ -2,6 +2,9 @@ import fetch from "node-fetch";
 import XLS from "xlsjs";
 import { getValidIpcUrl } from "./url-validator.js";
 import { baseIpcUrl, ipcMonth, ipcYear } from "./ipc.js";
+import eventManagerIpc from "../../core/eventManager.js";
+
+let workbook;
 
 export async function downloadProcessXlsIpc() {
     async function validacion(baseIpcUrl, ipcMonth, ipcYear) {
@@ -17,7 +20,7 @@ export async function downloadProcessXlsIpc() {
         //console.log("response", response.status);
 
         if (!(response.ok || response.status === 304)) {
-            throw new Error(`Error al descargar el archivo: ${response.statusText}`);
+            throw new Error(`-20 ipc- Error al descargar el archivo: ${response.statusText}`);
         }
 
         const arrayBuffer = await response.arrayBuffer();
@@ -29,7 +32,7 @@ export async function downloadProcessXlsIpc() {
 
         // Verificar si el contenido está vacío
         if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-            throw new Error("El archivo descargado está vacío o es inválido.");
+            throw new Error("-32 ipc- El archivo descargado está vacío o es inválido.");
         }
 
         const buffer = Buffer.from(arrayBuffer);
@@ -38,32 +41,34 @@ export async function downloadProcessXlsIpc() {
         try {
             workbook = XLS.read(buffer, { type: "buffer" });
         } catch (error) {
-            throw new Error("El archivo descargado no es un archivo XLS válido.");
+            throw new Error("-41 ipc- El archivo descargado no es un archivo XLS válido.");
         }
 
         // Verificar si el workbook es válido y tiene hojas
         if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
-            throw new Error("El archivo XLS no contiene hojas válidas.");
+            throw new Error("-46 ipc- El archivo XLS no contiene hojas válidas.");
         }
 
         // Obtener la primera hoja
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
         if (!sheet) {
-            throw new Error("La primera hoja del archivo XLS no existe o es inválida.");
+            throw new Error("-53 ipc- La primera hoja del archivo XLS no existe o es inválida.");
         }
 
         const jsonData = XLS.utils.sheet_to_json(sheet);
 
         // Validar si el JSON tiene contenido
         if (!jsonData || jsonData.length === 0) {
-            throw new Error("La hoja del archivo XLS está vacía o no contiene datos válidos.");
+            throw new Error(
+                "-60 ipc- La hoja del archivo XLS está vacía o no contiene datos válidos."
+            );
         }
 
         // ipc values all
         const ipcValuesAll = jsonData[6]; // Asegúrate de que jsonData[6] exista
         if (!ipcValuesAll || typeof ipcValuesAll !== "object") {
-            throw new Error("No se encontraron valores válidos en la fila esperada.");
+            throw new Error("-66 ipc- No se encontraron valores válidos en la fila esperada.");
         }
 
         // ipc length
@@ -93,11 +98,11 @@ export async function downloadProcessXlsIpc() {
         //console.log("ipcJson", ipcJson);
 
         // Emitir un evento personalizado con datos
-        eventManagerIpc.emit("ipcJson", ipcJson);
+        eventManagerIpc.emit("-96 ipc- ipcJson", ipcJson);
 
         return ipcJson;
     } catch (error) {
-        console.error("Error durante el procesamiento del archivo XLS:", error.message);
+        console.error("-100 ipc- Error durante el procesamiento del archivo XLS:", error.message);
         return null;
     }
 }

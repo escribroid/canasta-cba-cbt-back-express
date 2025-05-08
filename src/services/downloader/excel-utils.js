@@ -1,8 +1,5 @@
-
-
-
 // Función para convertir una fecha de Excel a una fecha de JavaScript
-function excelDateToJSDate(excelDate) {
+export function excelDateToJSDate(excelDate) {
     const excelEpoch = new Date(1900, 0, 1);
     const jsDate = new Date(excelEpoch.getTime() + (excelDate - 1) * 86400000);
     let month = jsDate.getMonth() + 1;

@@ -1,3 +1,5 @@
+import { baseIpcUrl, ipcMonth, ipcYear } from "./ipc.js";
+
 export async function getValidIpcUrl(baseIpcUrl, ipcMonth, ipcYear) {
     let currentIpcMonth = ipcMonth;
     console.log("-98- currentIpcMonth", currentIpcMonth);

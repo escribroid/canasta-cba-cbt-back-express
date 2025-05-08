@@ -1,8 +1,7 @@
 // Importar los módulos necesarios
 import fetch from "node-fetch";
 import XLS from "xlsjs";
-import { EventEmitter } from "events";
-import { verifyExcelFile } from "./src/services/downloader/verifyExcelFile.js"; // Asegúrate de que la ruta sea correcta
+import { excelDateToJSDate } from "./excel-utils.js";
 
 // URL del archivo XLS
 const urlXlsCba = "https://www.indec.gob.ar/ftp/cuadros/sociedad/serie_cba_cbt.xls";
